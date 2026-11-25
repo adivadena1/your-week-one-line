@@ -19,6 +19,11 @@ function main(): void {
   if (LINE.trim().length === 0) {
     throw new Error("entry line must not be blank");
   }
+  // The gate requires exactly one line: reject any embedded line break so a
+  // future edit to LINE can never silently ship a two-line entry.
+  if (/[\r\n]/.test(LINE)) {
+    throw new Error("entry line must be a single line with no line breaks");
+  }
   mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
   writeFileSync(OUTPUT_PATH, LINE + "\n", "utf8");
   console.log(`Wrote ${LINE.length}-character entry to ${OUTPUT_PATH}`);
